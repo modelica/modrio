@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modelica format="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../Modelica.xsd">
+	<declarations>
+		<classDefinition name="Decay">
+			<class kind="model">
+				<component name="x" visibility="public">
+					<builtin name="Real"/>
+					<modifier>
+						<item name="start">
+							<real value="3"/>
+						</item>
+						<item name="fixed">
+							<true/>
+						</item>
+					</modifier>
+				</component>
+				<equation>
+					<equal>
+						<operator name="der">
+							<local name="x"/>
+						</operator>
+						<apply builtin="-">
+							<local name="x"/>
+						</apply>
+					</equal>
+				</equation>
+			</class>
+		</classDefinition>
+	</declarations>
+</modelica>

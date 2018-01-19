@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="../Expression.xsd"/>
+	<xs:include schemaLocation="../Equation_Statement_separate.xsd"/>
+	<xs:include schemaLocation="../Types.xsd"/>
+	<xs:element name="examples">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="expression" type="ExpressionType"/>
+				<xs:element name="equation" type="Equations"/>
+				<xs:element name="algorithm" type="Statements"/>
+				<xs:element name="classContents" type="ClassContents"/>
+				<xs:element name="type" type="ElementClass"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

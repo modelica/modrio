@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<examples xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Examples.xsd">
+	<expression>
+		<real value="4.5"/>
+	</expression>
+	<expression>
+		<apply builtin="+">
+			<local name="x"/>
+			<real value="8.5"/>
+		</apply>
+	</expression>
+	<expression>
+		<apply>
+			<function>
+				<local name="f"/>
+			</function>
+			<local name="x"/>
+			<real value="8.5"/>
+		</apply>
+	</expression>
+	<expression>
+		<reference>
+			<local name="obj"/>
+			<member name="x"/>
+			<subscripts>
+				<integer value="5"/>
+				<local name="i"/>
+			</subscripts>
+		</reference>
+	</expression>
+	<type>
+		<class kind="model">
+			<component name="x" visibility="public">
+				<builtin name="Real"/>
+				<modifier>
+					<item name="start">
+						<real value="3"/>
+					</item>
+				</modifier>
+			</component>
+			<equation>
+				<equal>
+					<operator name="der">
+						<local name="x"/>
+					</operator>
+					<apply builtin="*">
+						<real value="-1"/>
+						<local name="x"/>
+					</apply>
+				</equal>
+			</equation>
+		</class>
+	</type>
+	<type>
+		<class kind="model">
+			<component name="x" variability="continuous" visibility="public">
+				<builtin name="Real"/>
+			</component>
+			<equation kind="initial">
+				<equal>
+					<local name="x"/>
+					<real value="1"/>
+				</equal>
+			</equation>
+			<equation>
+				<equal>
+					<operator name="der">
+						<local name="x"/>
+					</operator>
+					<apply builtin="-">
+						<local name="x"/>
+					</apply>
+				</equal>
+			</equation>
+		</class>
+	</type>
+	<type>
+		<class kind="class">
+			<classDefinition name="Probability" visibility="public">
+				<builtin name="Real"/>
+				<modifier>
+					<item name="min">
+						<real value="0"/>
+					</item>
+					<item name="max">
+						<real value="1"/>
+					</item>
+				</modifier>
+			</classDefinition>
+<!--			<extends>
+				<local name="MyBaseClass"/>
+			</extends> -->
+			<classDefinition name="Vector3">
+				<builtin name="Real"/>
+				<dimension>
+					<integer value="3"/>
+				</dimension>
+			</classDefinition>
+			<component name="p" variability="parameter">
+				<builtin name="Real"/>
+			</component>
+			<component name="x" variability="continuous">
+				<builtin name="Real"/>
+				<modifier>
+					<item name="start">
+						<real value="1"/>
+					</item>
+				</modifier>
+			</component>
+		</class>
+	</type>
+	<classContents kind="class">
+		<component name="x">
+			<builtin name="Real"/>
+		</component>
+<!--		<component name="y">
+			<reference>
+				<global name="Modelica"/>				
+				<member name="SIunits"/>
+				<member name="Resistance"/>
+			</reference>
+		</component> -->
+		<classDefinition name="Color">
+			<enumeration>
+				<item name="red"/>
+				<item name="green"/>
+				<item name="blue"/>
+			</enumeration>
+		</classDefinition>
+	</classContents>
+	<expression>
+		<real value="4.5"/>
+	</expression>
+	<expression>
+		<if>
+			<cond>
+				<local name="use_x"/>
+			</cond>
+			<then>
+				<local name="x"/>
+			</then>
+			<cond>
+				<local name="use_y"/>
+			</cond>
+			<then>
+				<local name="y"/>
+			</then>
+			<else>
+				<real value="0"/>
+			</else>
+		</if>
+	</expression>
+	<expression>
+		<operator name="der">
+			<local name="x"/>
+		</operator>
+	</expression>
+	<classContents kind="class">
+		<component name="x">
+			<builtin name="Real"/>
+			<bindingExpression>
+				<real value="5"/>
+			</bindingExpression>
+		</component>
+	</classContents>
+	<classContents kind="class">
+		<classDefinition name="MyModel">
+			<class kind="model">
+			</class>
+		</classDefinition>
+	</classContents>
+	<equation>
+		<connect>
+			<local name="left"/>
+			<local name="right"/>
+		</connect>
+	</equation>
+	<equation>
+		<if>
+			<cond>
+				<local name="positive"/>
+			</cond>
+			<then>
+				<equal>
+					<real value="1"></real>
+					<real value="1"></real>
+				</equal>
+			</then>
+			<cond>
+				<local name="negative"/>
+			</cond>
+			<then>
+				<equal>
+					<real value="2"></real>
+					<real value="2"></real>
+				</equal>
+			</then>
+			<else>
+				<equal>
+					<real value="3"></real>
+					<real value="3"></real>
+				</equal>
+			</else>
+		</if>
+		<for>
+			<index name="i">
+				<local name="inds"/>
+			</index>
+			<loop>
+				<equal>
+					<real value="1"></real>
+					<real value="1"></real>
+				</equal>
+			</loop>
+		</for>
+	</equation>
+	<algorithm>
+		<assign>
+			<to>
+				<builtin name="x"/>
+			</to>
+			<from>
+				<real value="5"/>
+			</from>
+		</assign>
+		<while>
+			<cond>
+				<local name="c"/>
+			</cond>
+			<then>
+				<assign>
+					<to>
+						<local name="x"/>
+					</to>
+					<from>
+						<real value="11"/>
+					</from>
+				</assign>
+			</then>
+		</while>
+	</algorithm>
+	<expression>
+		<apply builtin="+">
+			<local name="x"/>
+			<real value="5.5"/>
+		</apply>		
+	</expression>
+	<expression>
+		<apply>
+			<function>
+				<local name="f"/>
+			</function>
+			<real value="5.5"/>
+			<true/>
+		</apply>
+	</expression>
+	<expression>
+		<tuple>
+			<local name="x"/>
+			<local name="y"/>
+		</tuple>		
+	</expression>
+	<expression>
+		<reference>
+			<local name="obj"/>
+			<member name="x"/>
+			<subscripts>
+				<local name="k"/>
+				<integer value="3"/>
+			</subscripts>
+		</reference>
+	</expression>
+	<expression>
+		<apply>
+			<function>
+				<local name="f"/>
+			</function>
+			<local name="x"/>
+			<item name="positive">
+				<true/>
+			</item>
+		</apply>
+	</expression>
+</examples>

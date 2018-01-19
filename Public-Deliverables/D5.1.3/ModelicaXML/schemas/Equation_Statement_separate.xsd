@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="Expression.xsd"/>
+	<xs:simpleType name="SectionKind">
+		<xs:restriction base="xs:normalizedString">
+			<xs:enumeration value="parameter"/>
+			<xs:enumeration value="initial"/>
+			<xs:enumeration value="default"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="EquationSection">
+		<xs:sequence>
+			<xs:group ref="Equation" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="kind" type="SectionKind" use="optional" default="default"/>
+	</xs:complexType>
+	<xs:complexType name="AlgorithmSection">
+		<xs:sequence>
+			<xs:group ref="Statement" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="kind" type="SectionKind" use="optional" default="default"/>
+	</xs:complexType>
+	<xs:complexType name="AnnotationType">
+		<xs:group ref="Arguments"/>
+	</xs:complexType>
+	<!-- - - - - - - - - - - - - - - - - - - - - Equations - - - - - - - - - - - - - - - - - - - -->
+	<xs:complexType name="Equations">
+		<xs:sequence>
+			<xs:group ref="Equation" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:group name="Equation">
+		<xs:choice>
+			<xs:element name="equal" type="TwoExpressions"/>
+			<xs:element name="connect" type="TwoExpressions"/>
+			<xs:element name="if" type="IfEquation"/>
+			<xs:element name="for" type="ForEquation"/>
+			<xs:element name="when" type="WhenEquation"/>
+			<xs:element name="operator" type="OperatorEqStmt"/>
+			<xs:element name="apply" type="FunctionEqStmt"/>
+		</xs:choice>
+	</xs:group>
+	<xs:complexType name="TwoExpressions">
+		<xs:sequence>
+			<xs:group ref="Expression" minOccurs="2" maxOccurs="2"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IfEquation">
+		<xs:sequence>
+			<xs:group ref="EqBranch" maxOccurs="unbounded"/>
+			<xs:element name="else" type="Equations" minOccurs="0"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhenEquation">
+		<xs:sequence>
+			<xs:group ref="EqBranch" maxOccurs="unbounded"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:group name="EqBranch">
+		<xs:sequence>
+			<xs:element name="cond" type="ExpressionType"/>
+			<xs:element name="then" type="Equations"/>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="ForEquation">
+		<xs:sequence>
+			<xs:element name="index" type="NamedExpressionType" maxOccurs="unbounded"/>
+			<xs:element name="loop" type="Equations"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FunctionEqStmt">
+		<xs:complexContent>
+			<xs:extension base="FunctionApplication">
+				<xs:sequence>
+					<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OperatorEqStmt">
+		<xs:complexContent>
+			<xs:extension base="OperatorApplication">
+				<xs:sequence>
+					<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- - - - - - - - - - - - - - - - - - - - - Statements - - - - - - - - - - - - - - - - - - - -->
+	<xs:complexType name="Statements">
+		<xs:sequence>
+			<xs:group ref="Statement" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:group name="Statement">
+		<xs:choice>
+			<xs:element name="assign" type="Assignment"/>
+			<xs:element name="if" type="IfStatement"/>
+			<xs:element name="for" type="ForStatement"/>
+			<xs:element name="while" type="WhileStatement"/>
+			<xs:element name="when" type="WhenStatement"/>
+			<xs:element name="break" type="EmptyStatement"/>
+			<xs:element name="return" type="EmptyStatement"/>
+			<xs:element name="operator" type="OperatorEqStmt"/>
+			<xs:element name="apply" type="FunctionEqStmt"/>
+		</xs:choice>
+	</xs:group>
+	<xs:complexType name="Assignment">
+		<xs:sequence>
+			<xs:element name="to" type="LValueType"/>
+			<xs:element name="from" type="ExpressionType"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IfStatement">
+		<xs:sequence>
+			<xs:group ref="StmtBranch" maxOccurs="unbounded"/>
+			<xs:element name="else" type="Statements" minOccurs="0"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhileStatement">
+		<xs:sequence>
+			<xs:group ref="StmtBranch"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="WhenStatement">
+		<xs:sequence>
+			<xs:group ref="StmtBranch" maxOccurs="unbounded"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:group name="StmtBranch">
+		<xs:sequence>
+			<xs:element name="cond" type="ExpressionType"/>
+			<xs:element name="then" type="Statements"/>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="ForStatement">
+		<xs:sequence>
+			<xs:element name="index" type="NamedExpressionType" maxOccurs="unbounded"/>
+			<xs:element name="loop" type="Statements"/>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EmptyStatement">
+		<xs:sequence>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

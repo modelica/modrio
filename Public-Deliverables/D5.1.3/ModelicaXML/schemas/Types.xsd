@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="Expression.xsd"/>
+	<xs:include schemaLocation="Equation_Statement_separate.xsd"/>
+	<xs:complexType name="ElementClass">
+		<xs:sequence>
+			<xs:group ref="Class"/>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="dimension" type="ExpressionType"/>
+				<xs:element name="modifier" type="ArgumentsType"/>
+			</xs:choice>
+			<xs:element name="annotation" type="AnnotationType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="visibility" default="public">
+			<xs:simpleType>
+				<xs:restriction base="xs:string"/>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="comment" type="xs:string" use="optional"/>
+		<xs:attributeGroup ref="TypePrefixes"/>
+	</xs:complexType>
+	<xs:group name="Class">
+		<xs:choice>
+			<xs:group ref="QualifiedReference"/>
+			<xs:element name="enumeration" type="Enumeration"/>
+			<xs:element name="class" type="ClassContents"/>
+		</xs:choice>
+	</xs:group>
+	<xs:complexType name="Enumeration">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="item">
+				<xs:annotation>
+					<xs:documentation>First Item has value=1, Second Item has value = 2, etc.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="Name" use="required"/>
+					<xs:attribute name="description" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<!--		<xs:attribute name="quantity" type="xs:normalizedString"/>  -->
+	</xs:complexType>
+	<xs:complexType name="ClassContents">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:group ref="Declaration"/>
+			<xs:element name="equation" type="EquationSection"/>
+			<xs:element name="algorithm" type="AlgorithmSection"/>
+		</xs:choice>
+		<xs:attribute name="kind" type="ClassKind" use="required"/>
+		<xs:attribute name="partial" type="xs:boolean" default="false"/>
+		<xs:attribute name="purity" type="Purity" default="default"/>
+	</xs:complexType>
+	<xs:group name="Declaration">
+		<xs:choice>
+			<xs:element name="extends" type="ElementClass"/>
+			<xs:element name="classDefinition" type="ClassDefinition"/>
+			<xs:element name="component" type="Component"/>
+		</xs:choice>
+	</xs:group>
+	<xs:complexType name="ClassDefinition">
+		<xs:complexContent>
+			<xs:extension base="ElementClass">
+				<xs:attributeGroup ref="DeclarationPrefixes"/>
+				<xs:attribute name="name" type="Name" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Component">
+		<xs:complexContent>
+			<xs:extension base="ElementClass">
+				<xs:sequence>
+					<xs:element name="bindingExpression" type="ExpressionType" minOccurs="0"/>
+					<xs:element name="conditional" type="ExpressionType" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attributeGroup ref="DeclarationPrefixes"/>
+				<xs:attribute name="name" type="Name" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="ClassKind">
+		<xs:restriction base="xs:normalizedString">
+			<xs:enumeration value="class"/>
+			<xs:enumeration value="model"/>
+			<xs:enumeration value="record"/>
+			<xs:enumeration value="operator record"/>
+			<xs:enumeration value="block"/>
+			<xs:enumeration value="expandable connector"/>
+			<xs:enumeration value="connector"/>
+			<xs:enumeration value="package"/>
+			<xs:enumeration value="function"/>
+			<xs:enumeration value="operator function"/>
+			<xs:enumeration value="operator"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Purity">
+		<xs:restriction base="xs:normalizedString">
+			<xs:enumeration value="default"/>
+			<xs:enumeration value="pure"/>
+			<xs:enumeration value="impure"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:attributeGroup name="TypePrefixes">
+		<xs:attribute name="variability" default="continuous">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="constant"/>
+					<xs:enumeration value="parameter"/>
+					<xs:enumeration value="discrete"/>
+					<xs:enumeration value="continuous"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="causality" default="internal">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="input"/>
+					<xs:enumeration value="output"/>
+					<xs:enumeration value="internal"/>
+					<xs:enumeration value="none"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="flow" default="none">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="flow"/>
+					<xs:enumeration value="stream"/>
+					<xs:enumeration value="none"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="DeclarationPrefixes">
+		<xs:attribute name="final" type="xs:boolean" default="false"/>
+		<xs:attribute name="inner" type="xs:boolean" default="false"/>
+		<xs:attribute name="outer" type="xs:boolean" default="false"/>
+		<xs:attribute name="replaceable" type="xs:boolean" default="false"/>
+	</xs:attributeGroup>
+</xs:schema>

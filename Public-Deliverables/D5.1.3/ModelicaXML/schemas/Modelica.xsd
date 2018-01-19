@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="Expression.xsd"/>
+	<xs:include schemaLocation="Equation_Statement_separate.xsd"/>
+	<xs:include schemaLocation="Types.xsd"/>
+	<xs:element name="modelica">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="declarations" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Collects all top level declarations except the main one</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<!-- All allowable kinds of top level declarations go here -->
+							<xs:element name="classDefinition" type="ClassDefinition"/>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="classDefinition" type="ClassDefinition" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Main class definition, if there is one</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="format" use="required">
+				<xs:annotation>
+					<xs:documentation>Version number of the Modelica XML format used</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="1.0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

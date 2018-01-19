@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- - - - - - - - - - - - - - - - - - - - - Support types - - - - - - - - - - - - - - - - - - - - -->
+	<xs:simpleType name="Name">
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<!-- - - - - - - - - - - - - - - - - - - - - Expressions - - - - - - - - - - - - - - - - - - - - -->
+	<xs:complexType name="ExpressionType">
+		<xs:group ref="Expression"/>
+	</xs:complexType>
+	<xs:complexType name="NamedExpressionType">
+		<xs:group ref="Expression"/>
+		<xs:attribute name="name" type="Name" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="LValueType">
+		<xs:group ref="LValue"/>
+	</xs:complexType>
+	<xs:group name="MaybeExpression">
+		<xs:choice>
+			<xs:group ref="Expression"/>
+			<xs:element name="nothing" type="Empty"/>
+		</xs:choice>
+	</xs:group>
+	<xs:group name="Expression">
+		<xs:choice>
+			<xs:group ref="Literal"/>
+			<xs:element name="if" type="IfExpression"/>
+			<xs:element name="apply" type="FunctionApplication"/>
+			<xs:element name="operator" type="OperatorApplication"/>
+			<xs:group ref="LValue"/>
+		</xs:choice>
+	</xs:group>
+	<xs:group name="LValue">
+		<xs:choice>
+			<xs:group ref="QualifiedReference"/>
+			<xs:element name="tuple" type="MaybeExpressions"/>
+		</xs:choice>
+	</xs:group>
+	<xs:group name="QualifiedReference">
+		<xs:choice>
+			<xs:group ref="TopReference"/>
+			<xs:element name="reference" type="Reference"/>
+		</xs:choice>
+	</xs:group>
+	<xs:group name="TopReference">
+		<xs:choice>
+			<xs:element name="builtin" type="Named"/>
+			<xs:element name="local" type="Named"/>
+			<xs:element name="global" type="Named"/>
+		</xs:choice>
+	</xs:group>
+	<xs:complexType name="Named">
+		<xs:attribute name="name" type="Name" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="Reference">
+		<xs:sequence>
+			<xs:group ref="Expression"/>
+			<xs:choice maxOccurs="unbounded">
+				<xs:element name="member" type="Named"/>
+				<xs:element name="subscripts" type="Expressions"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:group name="Literal">
+		<xs:choice>
+			<xs:element name="real">
+				<xs:complexType>
+					<xs:attribute name="value" type="xs:double" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="integer">
+				<xs:complexType>
+					<xs:attribute name="value" type="xs:integer" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:group ref="Boolean"/>
+			<xs:element name="string">
+				<xs:complexType>
+					<xs:attribute name="value" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:group>
+	<xs:group name="Boolean">
+		<xs:choice>
+			<xs:element name="true" type="Empty"/>
+			<xs:element name="false" type="Empty"/>
+		</xs:choice>
+	</xs:group>
+	<xs:complexType name="Empty"/>
+	<xs:complexType name="FunctionApplication">
+		<xs:sequence>
+			<xs:element name="function" type="ExpressionType" minOccurs="0"/>
+			<xs:group ref="Arguments"/>
+		</xs:sequence>
+		<xs:attribute name="builtin" type="Name"/>
+	</xs:complexType>
+	<xs:complexType name="OperatorApplication">
+		<xs:group ref="Expression" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:attribute name="name" type="Name" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="Expressions">
+		<xs:group ref="Expression" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:complexType>
+	<xs:complexType name="MaybeExpressions">
+		<xs:group ref="MaybeExpression" minOccurs="0" maxOccurs="unbounded"/>
+	</xs:complexType>
+	<xs:group name="Arguments">
+		<xs:sequence>
+			<xs:group ref="Expression" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="item" type="NamedExpressionType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:group>
+	<xs:complexType name="ArgumentsType">
+		<xs:group ref="Arguments"/>
+	</xs:complexType>
+	<xs:complexType name="IfExpression">
+		<xs:sequence>
+			<xs:group ref="ExprBranch" maxOccurs="unbounded"/>
+			<xs:element name="else" type="ExpressionType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:group name="ExprBranch">
+		<xs:sequence>
+			<xs:element name="cond" type="ExpressionType"/>
+			<xs:element name="then" type="ExpressionType"/>
+		</xs:sequence>
+	</xs:group>
+</xs:schema>
